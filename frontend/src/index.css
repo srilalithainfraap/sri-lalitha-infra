@@ -23,22 +23,32 @@
 }
 
 /* ── Overflow guard — no unwanted horizontal scroll ─────────────────────── */
+/* IMPORTANT: use overflow-x: clip, NOT overflow-x: hidden.
+   overflow-x: hidden makes the element an overflow container (scroll container),
+   which causes position:sticky children to measure against the wrong ancestor
+   and window.scroll events to become unreliable on iOS Safari / Android Chrome.
+   overflow-x: clip clips the same visually but does NOT create a scroll container
+   (no BFC, no scroll container promotion).  The hidden line below is a fallback
+   for browsers that don't support clip (Safari <16, Chrome <90, Firefox <81);
+   those browsers will use hidden (less correct but not completely broken).      */
 html, body {
-  overflow-x: hidden;
+  overflow-x: hidden;       /* fallback for very old browsers */
+  overflow-x: clip;         /* preferred: clips without becoming scroll container */
   max-width: 100%;
 }
 
 html {
   scroll-behavior: smooth;
-  /* Use small viewport height for <html> so % heights inside work correctly */
-  height: 100%;
+  /* Do NOT set height: 100% on <html> — it makes iOS Safari use <body> as the
+     scroll container instead of window, which breaks position:sticky and causes
+     window.scroll events to be unreliable during fast touch swipes. */
 }
 
 body {
   font-family: 'Inter', system-ui, sans-serif;
   background-color: var(--color-ivory);
   color: var(--color-navy-deep);
-  min-height: 100%;
+  min-height: 100vh;            /* use explicit viewport unit, not % of html */
   /* Safe-area bottom padding for devices with home indicator */
   padding-bottom: env(safe-area-inset-bottom, 0px);
 }

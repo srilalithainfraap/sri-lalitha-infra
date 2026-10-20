@@ -119,6 +119,7 @@ export function HeroScrollExperience() {
       // started sliding off — which produces a white-background gap.
       const stickyH    = stickyRef.current?.offsetHeight || window.innerHeight;
       const scrollable = section.offsetHeight - stickyH;
+      if (scrollable <= 0) return;  // layout not ready yet; avoid NaN progress
       setProgress(Math.max(0, Math.min(1, scrolled / scrollable)));
     };
 
@@ -138,7 +139,11 @@ export function HeroScrollExperience() {
   }, []);
 
   /* ── Phase opacities ─────────────────────────────────────────────────── */
-  const p1 = phaseOpacity(progress, 0,    0.04, 0.27,  0.35);
+  // Phase 1 must be visible at progress=0 so the user sees the title, CTAs and
+  // "Scroll to Explore" cue on page load.  enterAt=fullAt=0 means it is already
+  // at full opacity before any scroll happens; the framer-motion entrance
+  // animations on the text then play visibly when the page first renders.
+  const p1 = phaseOpacity(progress, 0,    0,    0.27,  0.35);
   const p2 = phaseOpacity(progress, 0.33, 0.41, 0.58,  0.66);
   const p3 = phaseOpacity(progress, 0.66, 0.74, 1.01,  1.10);
 
@@ -151,7 +156,7 @@ export function HeroScrollExperience() {
   return (
     <section
       ref={sectionRef}
-      className="relative"
+      className="relative bg-[#101B35]"
       style={{ height: '500vh' }}
       aria-label="Cinematic hero scroll experience"
     >
