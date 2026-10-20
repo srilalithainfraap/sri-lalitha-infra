@@ -217,7 +217,7 @@ export function HeroScrollCanvas({ scrollProgress, framePaths, fallbackSrc }) {
       ref={canvasRef}
       className="absolute inset-0 w-full h-full block"
       aria-hidden="true"
-      style={{ touchAction: 'none', userSelect: 'none' }}
+      style={{ touchAction: 'pan-y', userSelect: 'none' }}
     />
   );
 }

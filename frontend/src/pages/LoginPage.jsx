@@ -30,13 +30,13 @@ function AuthInput({ label, error, type = 'text', ...props }) {
         <input
           type={isPwd ? (show ? 'text' : 'password') : type}
           className={[
-            'w-full px-4 py-3 rounded-xl text-sm transition-all duration-200 focus:outline-none',
+            'w-full px-4 py-3 rounded-xl transition-all duration-200 focus:outline-none',
             'text-white placeholder-white/25',
             error
               ? 'border border-red-500/50 bg-red-950/25 focus:ring-2 focus:ring-red-500/20'
               : 'border border-white/[0.10] bg-[#0D1829]/70 hover:border-[#C4923A]/30 hover:bg-[#0D1829]/80 focus:border-[#C4923A]/65 focus:ring-2 focus:ring-[#C4923A]/12 focus:bg-[#122038]/80',
           ].join(' ')}
-          style={{ backdropFilter: 'blur(10px)' }}
+          style={{ backdropFilter: 'blur(10px)', fontSize: '1rem' }}
           {...props}
         />
         {isPwd && (

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, ChevronLeft, ChevronRight, Images } from 'lucide-react';
 import { useAnalytics } from '../hooks/useAnalytics';
@@ -83,8 +83,30 @@ export function GalleryPage() {
     : allItems.filter((i) => i.category === activeCategory);
 
   const closeLightbox = () => setLightboxIndex(null);
-  const prevItem = () => setLightboxIndex((i) => (i > 0 ? i - 1 : filtered.length - 1));
-  const nextItem = () => setLightboxIndex((i) => (i < filtered.length - 1 ? i + 1 : 0));
+  const prevItem = useCallback(() => setLightboxIndex((i) => (i > 0 ? i - 1 : filtered.length - 1)), [filtered.length]);
+  const nextItem = useCallback(() => setLightboxIndex((i) => (i < filtered.length - 1 ? i + 1 : 0)), [filtered.length]);
+
+  // Keyboard navigation for lightbox
+  useEffect(() => {
+    if (lightboxIndex === null) return;
+    const onKey = (e) => {
+      if (e.key === 'ArrowLeft')  prevItem();
+      if (e.key === 'ArrowRight') nextItem();
+      if (e.key === 'Escape')     closeLightbox();
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [lightboxIndex, prevItem, nextItem]);
+
+  // Touch swipe for lightbox
+  const touchStartX = useRef(null);
+  const onTouchStart = (e) => { touchStartX.current = e.touches[0].clientX; };
+  const onTouchEnd = (e) => {
+    if (touchStartX.current === null) return;
+    const dx = e.changedTouches[0].clientX - touchStartX.current;
+    if (Math.abs(dx) > 50) { dx < 0 ? nextItem() : prevItem(); }
+    touchStartX.current = null;
+  };
 
   return (
     <div className="min-h-screen bg-[#F8F6F0] pt-16 lg:pt-20">
@@ -159,22 +181,30 @@ export function GalleryPage() {
             exit={{ opacity: 0 }}
             className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-4"
             onClick={closeLightbox}
+            onTouchStart={onTouchStart}
+            onTouchEnd={onTouchEnd}
+            role="dialog"
+            aria-modal="true"
+            aria-label="Image lightbox"
           >
             <button
-              className="absolute top-4 right-4 text-white hover:text-[#D5B46B] transition z-10"
+              className="absolute top-4 right-4 text-white hover:text-[#D5B46B] transition z-10 min-w-[44px] min-h-[44px] flex items-center justify-center"
               onClick={closeLightbox}
+              aria-label="Close lightbox"
             >
               <X size={30} />
             </button>
             <button
-              className="absolute left-4 top-1/2 -translate-y-1/2 text-white hover:text-[#D5B46B] transition z-10"
+              className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 text-white hover:text-[#D5B46B] transition z-10 min-w-[44px] min-h-[44px] flex items-center justify-center"
               onClick={(e) => { e.stopPropagation(); prevItem(); }}
+              aria-label="Previous image"
             >
               <ChevronLeft size={40} />
             </button>
             <button
-              className="absolute right-4 top-1/2 -translate-y-1/2 text-white hover:text-[#D5B46B] transition z-10"
+              className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 text-white hover:text-[#D5B46B] transition z-10 min-w-[44px] min-h-[44px] flex items-center justify-center"
               onClick={(e) => { e.stopPropagation(); nextItem(); }}
+              aria-label="Next image"
             >
               <ChevronRight size={40} />
             </button>

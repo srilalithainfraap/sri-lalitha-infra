@@ -139,7 +139,7 @@ export function HeroScrollExperience() {
       aria-label="Cinematic hero scroll experience"
     >
       {/* ── Sticky viewport ──────────────────────────────────────────────── */}
-      <div className="sticky top-0 h-screen overflow-hidden bg-[#101B35]">
+      <div className="sticky top-0 h-screen-safe overflow-hidden bg-[#101B35]">
 
         {/* ── Canvas + overlays ─────────────────────────────────────────── */}
         <div className="absolute inset-0">
@@ -187,7 +187,7 @@ export function HeroScrollExperience() {
 
         {/* ══════════ PHASE 1 — Hero ═════════════════════════════════════ */}
         <PhaseLayer opacity={p1}>
-          <div className="flex-1 flex flex-col justify-center px-6 sm:px-12 lg:px-20 xl:px-28 pt-28 pb-0">
+          <div className="flex-1 flex flex-col justify-center px-6 sm:px-12 lg:px-20 xl:px-28 pt-20 sm:pt-28 pb-0">
             <motion.p
               initial={{ opacity: 0, y: 14 }}
               animate={{ opacity: 1, y: 0 }}
@@ -273,7 +273,7 @@ export function HeroScrollExperience() {
 
         {/* ══════════ PHASE 2 — Community ════════════════════════════════ */}
         <PhaseLayer opacity={p2}>
-          <div className="flex-1 flex items-center px-6 sm:px-12 lg:px-20 xl:px-28 pt-24 pb-16">
+          <div className="flex-1 flex items-center px-6 sm:px-12 lg:px-20 xl:px-28 pt-20 sm:pt-24 pb-12 sm:pb-16">
             <div className="max-w-2xl">
               <p className="text-[#B88A35] text-xs sm:text-sm font-semibold tracking-[0.28em] uppercase mb-5">
                 {config.project.name}
@@ -316,7 +316,7 @@ export function HeroScrollExperience() {
 
         {/* ══════════ PHASE 3 — Future ════════════════════════════════════ */}
         <PhaseLayer opacity={p3}>
-          <div className="flex-1 flex items-center px-6 sm:px-12 lg:px-20 xl:px-28 pt-24 pb-16">
+          <div className="flex-1 flex items-center px-6 sm:px-12 lg:px-20 xl:px-28 pt-20 sm:pt-24 pb-12 sm:pb-16">
             <div className="max-w-2xl">
               <p className="text-[#B88A35] text-xs sm:text-sm font-semibold tracking-[0.28em] uppercase mb-5">
                 {config.company.name} — {config.company.tagline}

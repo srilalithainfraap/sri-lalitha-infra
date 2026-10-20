@@ -581,7 +581,7 @@ export function AdminPage() {
                   <span className="ml-2 text-sm font-normal text-gray-400">({galleryItems.length})</span>
                 </h2>
                 {galleryItems.length > 0 && (
-                  <p className="text-xs text-gray-400">Hover an image to delete it</p>
+                  <p className="text-xs text-gray-400 hidden sm:block">Hover an image to delete it</p>
                 )}
               </div>
 
@@ -605,11 +605,12 @@ export function AdminPage() {
                         <p className="text-xs font-medium text-[#172544] truncate">{item.title}</p>
                         <p className="text-[10px] text-gray-400 truncate">{item.category}</p>
                       </div>
-                      {/* Delete button */}
+                      {/* Delete button — always visible on touch, hover-only on pointer devices */}
                       <button
                         onClick={() => confirmDelete(item.id)}
                         title="Delete image"
-                        className="absolute top-1.5 right-1.5 bg-red-500 hover:bg-red-600 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition shadow"
+                        aria-label={`Delete ${item.title}`}
+                        className="absolute top-1.5 right-1.5 bg-red-500 hover:bg-red-600 text-white rounded-full p-1.5 transition shadow opacity-100 sm:opacity-0 sm:group-hover:opacity-100 min-w-[32px] min-h-[32px] flex items-center justify-center"
                       >
                         <X size={11} />
                       </button>

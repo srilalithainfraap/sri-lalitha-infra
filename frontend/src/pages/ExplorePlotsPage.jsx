@@ -187,47 +187,52 @@ export function ExplorePlotsPage() {
       <div className="max-w-7xl mx-auto px-4 py-6">
         {/* Filters */}
         <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 mb-6">
-          <div className="flex flex-wrap gap-3 items-end">
-            <div className="relative flex-1 min-w-[160px]">
+          <div className="flex flex-col sm:flex-row flex-wrap gap-3 items-stretch sm:items-end">
+            {/* Search */}
+            <div className="relative flex-1 min-w-0 sm:min-w-[160px]">
               <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
               <input
                 type="text"
                 placeholder="Search plot number..."
                 value={filters.search}
                 onChange={(e) => setFilters((f) => ({ ...f, search: e.target.value }))}
-                className="w-full pl-9 pr-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#B88A35]"
+                className="w-full pl-9 pr-3 py-2.5 border border-gray-200 rounded-lg text-base min-h-[44px] focus:outline-none focus:ring-2 focus:ring-[#B88A35]"
               />
             </div>
 
-            <select
-              value={filters.status}
-              onChange={(e) => setFilters((f) => ({ ...f, status: e.target.value }))}
-              className="border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#B88A35]"
-            >
-              <option value="all">All Status</option>
-              <option value="available">Available ({counts.available})</option>
-              <option value="reserved">Reserved ({counts.reserved})</option>
-              <option value="sold">Sold ({counts.sold})</option>
-            </select>
+            {/* Status + Facing selects row */}
+            <div className="flex gap-2 flex-wrap">
+              <select
+                value={filters.status}
+                onChange={(e) => setFilters((f) => ({ ...f, status: e.target.value }))}
+                className="flex-1 min-w-[120px] border border-gray-200 rounded-lg px-3 py-2.5 text-base min-h-[44px] focus:outline-none focus:ring-2 focus:ring-[#B88A35]"
+              >
+                <option value="all">All Status</option>
+                <option value="available">Available ({counts.available})</option>
+                <option value="reserved">Reserved ({counts.reserved})</option>
+                <option value="sold">Sold ({counts.sold})</option>
+              </select>
 
-            <select
-              value={filters.facing}
-              onChange={(e) => setFilters((f) => ({ ...f, facing: e.target.value }))}
-              className="border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#B88A35]"
-            >
-              <option value="all">All Facing</option>
-              {['East', 'West', 'North', 'South'].map((f) => (
-                <option key={f} value={f}>{f}</option>
-              ))}
-            </select>
+              <select
+                value={filters.facing}
+                onChange={(e) => setFilters((f) => ({ ...f, facing: e.target.value }))}
+                className="flex-1 min-w-[120px] border border-gray-200 rounded-lg px-3 py-2.5 text-base min-h-[44px] focus:outline-none focus:ring-2 focus:ring-[#B88A35]"
+              >
+                <option value="all">All Facing</option>
+                {['East', 'West', 'North', 'South'].map((f) => (
+                  <option key={f} value={f}>{f}</option>
+                ))}
+              </select>
+            </div>
 
-            <div className="flex items-center gap-2">
+            {/* Area range + view toggles */}
+            <div className="flex items-center gap-2 flex-wrap">
               <input
                 type="number"
                 placeholder="Min area"
                 value={filters.minArea}
                 onChange={(e) => setFilters((f) => ({ ...f, minArea: e.target.value }))}
-                className="w-24 border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#B88A35]"
+                className="w-24 border border-gray-200 rounded-lg px-3 py-2.5 text-base min-h-[44px] focus:outline-none focus:ring-2 focus:ring-[#B88A35]"
               />
               <span className="text-gray-400 text-sm">—</span>
               <input
@@ -235,25 +240,27 @@ export function ExplorePlotsPage() {
                 placeholder="Max area"
                 value={filters.maxArea}
                 onChange={(e) => setFilters((f) => ({ ...f, maxArea: e.target.value }))}
-                className="w-24 border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#B88A35]"
+                className="w-24 border border-gray-200 rounded-lg px-3 py-2.5 text-base min-h-[44px] focus:outline-none focus:ring-2 focus:ring-[#B88A35]"
               />
-            </div>
 
-            <div className="flex items-center gap-1 ml-auto">
-              <button
-                onClick={() => setViewMode('map')}
-                className={`p-2 rounded-lg transition ${viewMode === 'map' ? 'bg-[#B88A35] text-white' : 'bg-gray-100 text-gray-500 hover:bg-gray-200'}`}
-                title="Map view"
-              >
-                <Map size={18} />
-              </button>
-              <button
-                onClick={() => setViewMode('list')}
-                className={`p-2 rounded-lg transition ${viewMode === 'list' ? 'bg-[#B88A35] text-white' : 'bg-gray-100 text-gray-500 hover:bg-gray-200'}`}
-                title="List view"
-              >
-                <List size={18} />
-              </button>
+              <div className="flex items-center gap-1 ml-auto">
+                <button
+                  onClick={() => setViewMode('map')}
+                  className={`p-2.5 rounded-lg transition min-w-[44px] min-h-[44px] flex items-center justify-center ${viewMode === 'map' ? 'bg-[#B88A35] text-white' : 'bg-gray-100 text-gray-500 hover:bg-gray-200'}`}
+                  title="Map view"
+                  aria-label="Map view"
+                >
+                  <Map size={18} />
+                </button>
+                <button
+                  onClick={() => setViewMode('list')}
+                  className={`p-2.5 rounded-lg transition min-w-[44px] min-h-[44px] flex items-center justify-center ${viewMode === 'list' ? 'bg-[#B88A35] text-white' : 'bg-gray-100 text-gray-500 hover:bg-gray-200'}`}
+                  title="List view"
+                  aria-label="List view"
+                >
+                  <List size={18} />
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -299,13 +306,14 @@ export function ExplorePlotsPage() {
                     <RotateCcw size={16} />
                   </button>
                   <span className="text-xs text-gray-400 ml-1">{Math.round(zoom * 100)}%</span>
-                  <span className="text-xs text-gray-400 ml-auto">Click a plot to view details</span>
+                  <span className="text-xs text-gray-400 ml-auto hidden sm:block">Click a plot to view details</span>
+                  <span className="text-xs text-gray-400 ml-auto sm:hidden">Tap a plot to view details</span>
                 </div>
 
                 <div
                   ref={containerRef}
                   className="overflow-auto"
-                  style={{ maxHeight: '520px' }}
+                  style={{ maxHeight: 'min(520px, 70vh)' }}
                 >
                   <div
                     style={{ transform: `scale(${zoom})`, transformOrigin: 'top left', transition: 'transform 0.2s ease' }}

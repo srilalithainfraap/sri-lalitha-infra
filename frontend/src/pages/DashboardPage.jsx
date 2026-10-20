@@ -33,18 +33,20 @@ export function DashboardPage() {
 
   return (
     <div className="min-h-screen bg-[#F8F6F0] pt-16 lg:pt-20">
-      <div className="bg-[#172544] text-white py-10 px-4">
-        <div className="max-w-6xl mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <div className="w-14 h-14 rounded-full bg-[#B88A35] flex items-center justify-center text-xl font-bold">
+      <div className="bg-[#172544] text-white py-8 sm:py-10 px-4">
+        <div className="max-w-6xl mx-auto flex flex-wrap items-start sm:items-center justify-between gap-4">
+          <div className="flex items-center gap-3 min-w-0">
+            <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-[#B88A35] flex items-center justify-center text-lg sm:text-xl font-bold flex-shrink-0">
               {currentUser?.name?.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2) || 'U'}
             </div>
-            <div>
-              <h1 className="text-2xl font-bold">Welcome back, {currentUser?.name}!</h1>
-              <p className="text-[#D5B46B] text-sm mt-0.5">Explore your next opportunity with Sri Lalitha Infra.</p>
+            <div className="min-w-0">
+              <h1 className="text-xl sm:text-2xl font-bold leading-snug truncate">
+                Welcome back, {currentUser?.name?.split(' ')[0]}!
+              </h1>
+              <p className="text-[#D5B46B] text-sm mt-0.5 truncate">Explore your next opportunity.</p>
             </div>
           </div>
-          <button onClick={logout} className="flex items-center gap-2 text-gray-400 hover:text-red-400 transition text-sm">
+          <button onClick={logout} className="flex items-center gap-2 text-gray-400 hover:text-red-400 transition text-sm min-h-[44px] px-2">
             <LogOut size={16} /> Logout
           </button>
         </div>
@@ -72,7 +74,7 @@ export function DashboardPage() {
         </div>
 
         {/* Tabs */}
-        <div className="flex gap-1 bg-gray-100 rounded-xl p-1 mb-6 w-fit">
+        <div className="flex gap-1 bg-gray-100 rounded-xl p-1 mb-6 w-fit max-w-full overflow-x-auto">
           {tabs.map((tab) => (
             <button
               key={tab.id}

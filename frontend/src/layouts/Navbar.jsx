@@ -25,6 +25,16 @@ export function Navbar() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // Prevent background scroll when mobile menu is open
+  useEffect(() => {
+    if (menuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => { document.body.style.overflow = ''; };
+  }, [menuOpen]);
+
   const handleLogout = () => {
     logout();
     setMenuOpen(false);
@@ -126,8 +136,10 @@ export function Navbar() {
           {/* Mobile Menu Button */}
           <button
             onClick={() => setMenuOpen((v) => !v)}
-            className={`lg:hidden p-2 rounded-lg ${scrolled ? 'text-[#172544]' : 'text-white'}`}
-            aria-label="Toggle menu"
+            className={`lg:hidden p-2 rounded-lg min-w-[44px] min-h-[44px] flex items-center justify-center ${scrolled ? 'text-[#172544]' : 'text-white'}`}
+            aria-label={menuOpen ? 'Close menu' : 'Open menu'}
+            aria-expanded={menuOpen}
+            aria-controls="mobile-nav"
           >
             {menuOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
@@ -138,6 +150,7 @@ export function Navbar() {
       <AnimatePresence>
         {menuOpen && (
           <motion.div
+            id="mobile-nav"
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
@@ -151,7 +164,7 @@ export function Navbar() {
                   end={link.to === '/'}
                   onClick={() => setMenuOpen(false)}
                   className={({ isActive }) =>
-                    `px-3 py-2.5 rounded-lg text-sm font-medium transition ${
+                    `px-3 py-3 rounded-lg text-sm font-medium transition min-h-[44px] flex items-center ${
                       isActive ? 'bg-[#B88A35]/10 text-[#B88A35]' : 'text-[#172544] hover:bg-gray-50'
                     }`
                   }

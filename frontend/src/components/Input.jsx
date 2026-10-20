@@ -12,7 +12,7 @@ export function Input({ label, error, className = '', type = 'text', ...props })
       <div className="relative">
         <input
           type={inputType}
-          className={`w-full px-4 py-2.5 rounded-lg border ${
+          className={`w-full px-4 py-2.5 rounded-lg border text-base min-h-[44px] ${
             error ? 'border-red-400 focus:ring-red-400' : 'border-gray-300 focus:ring-[#B88A35]'
           } focus:outline-none focus:ring-2 focus:ring-offset-0 bg-white text-[#101B35] transition`}
           {...props}
@@ -39,7 +39,7 @@ export function Textarea({ label, error, className = '', rows = 4, ...props }) {
       {label && <label className="text-sm font-medium text-[#172544]">{label}</label>}
       <textarea
         rows={rows}
-        className={`w-full px-4 py-2.5 rounded-lg border ${
+        className={`w-full px-4 py-2.5 rounded-lg border text-base ${
           error ? 'border-red-400 focus:ring-red-400' : 'border-gray-300 focus:ring-[#B88A35]'
         } focus:outline-none focus:ring-2 focus:ring-offset-0 bg-white text-[#101B35] transition resize-none`}
         {...props}
@@ -54,7 +54,7 @@ export function Select({ label, error, className = '', children, ...props }) {
     <div className={`flex flex-col gap-1 ${className}`}>
       {label && <label className="text-sm font-medium text-[#172544]">{label}</label>}
       <select
-        className={`w-full px-4 py-2.5 rounded-lg border ${
+        className={`w-full px-4 py-2.5 rounded-lg border text-base min-h-[44px] ${
           error ? 'border-red-400 focus:ring-red-400' : 'border-gray-300 focus:ring-[#B88A35]'
         } focus:outline-none focus:ring-2 focus:ring-offset-0 bg-white text-[#101B35] transition`}
         {...props}
