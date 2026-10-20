@@ -78,6 +78,7 @@ function PhaseLayer({ opacity, children }) {
 /* ── HeroScrollExperience ─────────────────────────────────────────────────── */
 export function HeroScrollExperience() {
   const sectionRef     = useRef(null);
+  const stickyRef      = useRef(null);   // sticky viewport div — used for accurate scrollable calc
   const [progress, setProgress]       = useState(0);
   // Optimistic default: assume the sequence exists so frames start loading
   // immediately on mount rather than waiting for the probe to resolve.
@@ -109,15 +110,31 @@ export function HeroScrollExperience() {
     const onScroll = () => {
       const section = sectionRef.current;
       if (!section) return;
-      const rect      = section.getBoundingClientRect();
-      const scrolled  = -rect.top;
-      const scrollable = section.offsetHeight - window.innerHeight;
+      const rect       = section.getBoundingClientRect();
+      const scrolled   = -rect.top;
+      // Use the sticky container's actual rendered height rather than
+      // window.innerHeight.  On iOS Safari, 100vh (= large viewport) may
+      // differ from window.innerHeight (= visible viewport with toolbar),
+      // causing progress to hit 1.0 after the sticky element has already
+      // started sliding off — which produces a white-background gap.
+      const stickyH    = stickyRef.current?.offsetHeight || window.innerHeight;
+      const scrollable = section.offsetHeight - stickyH;
       setProgress(Math.max(0, Math.min(1, scrolled / scrollable)));
     };
 
     window.addEventListener('scroll', onScroll, { passive: true });
+
+    // iOS Safari fires visualViewport 'resize' when the toolbar shows/hides
+    // (window.innerHeight also changes but a separate event source is more
+    // reliable for recalculating progress after the layout settles).
+    const vv = window.visualViewport;
+    if (vv) vv.addEventListener('resize', onScroll);
+
     onScroll(); // initialise
-    return () => window.removeEventListener('scroll', onScroll);
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      if (vv) vv.removeEventListener('resize', onScroll);
+    };
   }, []);
 
   /* ── Phase opacities ─────────────────────────────────────────────────── */
@@ -139,7 +156,7 @@ export function HeroScrollExperience() {
       aria-label="Cinematic hero scroll experience"
     >
       {/* ── Sticky viewport ──────────────────────────────────────────────── */}
-      <div className="sticky top-0 h-screen-safe overflow-hidden bg-[#101B35]">
+      <div ref={stickyRef} className="sticky top-0 h-screen-safe overflow-hidden bg-[#101B35]">
 
         {/* ── Canvas + overlays ─────────────────────────────────────────── */}
         <div className="absolute inset-0">

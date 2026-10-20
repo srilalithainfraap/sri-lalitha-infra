@@ -44,10 +44,14 @@ body {
 }
 
 /* ── Dynamic viewport height helper ─────────────────────────────────────── */
-/* Fallback for browsers that don't support 100svh / 100dvh                 */
+/* For a sticky full-screen hero, use the LARGE viewport so the container
+   always fills the screen.  100svh (small viewport) caused a gap at the
+   bottom whenever iOS Safari hid its toolbar, revealing the white page
+   background behind the transparent section.  100lvh = large viewport =
+   same as 100vh on iOS Safari — no gap possible.                          */
 .h-screen-safe {
-  height: 100vh;           /* fallback */
-  height: 100svh;          /* small viewport height — stable across iOS toolbar show/hide */
+  height: 100vh;           /* ultimate fallback (old browsers) */
+  height: 100lvh;          /* large viewport — fills full screen when toolbar hides */
 }
 
 /* ── iOS input zoom prevention ───────────────────────────────────────────── */

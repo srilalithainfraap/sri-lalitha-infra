@@ -110,6 +110,10 @@ export function HeroScrollCanvas({ scrollProgress, framePaths, fallbackSrc }) {
     const ch       = canvas.height;
     const progress = Math.max(0, Math.min(1, scrollProgress || 0));
 
+    // Canvas is 0×0 if ResizeObserver hasn't fired yet (first paint on mobile).
+    // Trigger a resize so the next RAF picks up the correct dimensions.
+    if (!cw || !ch) { resizeCanvas(); return; }
+
     if (!hasSequence) {
       // Ken Burns fallback on single image
       const img = fallbackRef.current;
@@ -137,7 +141,7 @@ export function HeroScrollCanvas({ scrollProgress, framePaths, fallbackSrc }) {
     ctx.clearRect(0, 0, cw, ch);
     drawCover(ctx, img, cw, ch);
     maskWatermark(ctx, cw, ch);
-  }, [scrollProgress, hasSequence, frameCount]);
+  }, [scrollProgress, hasSequence, frameCount, resizeCanvas]);
 
   /* ── keep drawRef current after every render ───────────────────────────── */
   useEffect(() => { drawRef.current = draw; });
@@ -152,13 +156,28 @@ export function HeroScrollCanvas({ scrollProgress, framePaths, fallbackSrc }) {
   /* ── resize listener — registered once, uses drawRef ───────────────────── */
   useEffect(() => {
     resizeCanvas();
+
     const onResize = () => {
       resizeCanvas();
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
       rafRef.current = requestAnimationFrame(() => drawRef.current?.());
     };
+
+    // ResizeObserver fires whenever the canvas CSS dimensions change —
+    // including iOS Safari toolbar show/hide, which does NOT fire window.resize.
+    // This prevents stale canvas physical dimensions after viewport height shifts.
+    let ro;
+    const canvas = canvasRef.current;
+    if (canvas && typeof ResizeObserver !== 'undefined') {
+      ro = new ResizeObserver(onResize);
+      ro.observe(canvas);
+    }
+
     window.addEventListener('resize', onResize);
-    return () => window.removeEventListener('resize', onResize);
+    return () => {
+      ro?.disconnect();
+      window.removeEventListener('resize', onResize);
+    };
   }, [resizeCanvas]); // no `draw` dep — uses drawRef so listener is stable
 
   /* ── image loading ─────────────────────────────────────────────────────── */
